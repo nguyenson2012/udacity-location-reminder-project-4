@@ -12,9 +12,8 @@ import org.junit.Rule;
 import org.junit.runner.RunWith;
 
 import kotlinx.coroutines.ExperimentalCoroutinesApi;
-import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.runTest
 import org.hamcrest.CoreMatchers.`is`
-import org.hamcrest.CoreMatchers.notNullValue
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.After
 import org.junit.Test
@@ -24,7 +23,46 @@ import org.junit.Test
 //Unit test the DAO
 @SmallTest
 class RemindersDaoTest {
+    @get:Rule
+    var instantRule = InstantTaskExecutorRule()
 
-//    TODO: Add testing implementation to the RemindersDao.kt
+    private lateinit var database: RemindersDatabase
+
+    @Before
+    fun initializeDb() {
+        database = Room.inMemoryDatabaseBuilder(
+            ApplicationProvider.getApplicationContext(),
+            RemindersDatabase::class.java
+        ).build()
+    }
+
+    @After
+    fun closeDb() = database.close()
+
+    @Test
+    fun testInsertData() = runTest {
+
+        val data = ReminderDTO(
+            "remind title 123",
+            "description 456",
+            "location 789",
+            44.00,
+            55.00)
+
+        database.reminderDao().saveReminder(data)
+
+        val loadedDataList = database.reminderDao().getReminders()
+
+        assertThat(loadedDataList.size, `is`(1))
+
+        val loadedData = loadedDataList[0]
+
+        assertThat(loadedData.id, `is`(data.id))
+        assertThat(loadedData.title, `is`(data.title))
+        assertThat(loadedData.description, `is`(data.description))
+        assertThat(loadedData.location, `is`(data.location))
+        assertThat(loadedData.latitude, `is`(data.latitude))
+        assertThat(loadedData.longitude, `is`(data.longitude))
+    }
 
 }

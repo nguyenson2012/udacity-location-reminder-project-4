@@ -1,7 +1,7 @@
 package com.udacity.project4.locationreminders.reminderslist
 
 import java.io.Serializable
-import java.util.*
+import java.util.UUID
 
 /**
  * data class acts as a data mapper between the DB and the UI

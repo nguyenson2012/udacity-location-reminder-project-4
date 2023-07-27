@@ -12,10 +12,8 @@ import org.koin.core.context.startKoin
 import org.koin.dsl.module
 
 class MyApp : Application() {
-
     override fun onCreate() {
         super.onCreate()
-
         /**
          * use Koin Library as a service locator
          */
@@ -35,8 +33,8 @@ class MyApp : Application() {
                     get() as ReminderDataSource
                 )
             }
-            single { RemindersLocalRepository(get()) as ReminderDataSource }
             single { LocalDB.createRemindersDao(this@MyApp) }
+            single { RemindersLocalRepository(get()) as ReminderDataSource }
         }
 
         startKoin {
